@@ -1,0 +1,140 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map(article => ({
+    params: { id: article.id },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { Content } = await article.render();
+const isChinese = article.data.language === '中文';
+---
+
+<Layout title={`${article.data.title} - Sotaemon`}>
+  <Navigation alwaysVisible={true} />
+  
+  <main class={`article-page ${isChinese ? 'chinese' : 'english'}`}>
+    <article class="article">
+      <header class="article-header">
+        <a href="/text" class="back-link">← {isChinese ? '返回文章列表' : 'Back to Articles'}</a>
+        <h1>{article.data.title}</h1>
+        <div class="article-meta">
+          <span class="language">{article.data.language}</span>
+          <span class="date">{article.data.date}</span>
+          <span class="read-time">{article.data.readTime}</span>
+        </div>
+      </header>
+      
+      <div class="article-content">
+        <Content />
+      </div>
+    </article>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .article-page {
+    min-height: 100vh;
+    padding-top: 60px;
+  }
+  
+  .article {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+  
+  .article-header {
+    margin-bottom: 3rem;
+  }
+  
+  .back-link {
+    display: inline-block;
+    color: #E9633B;
+    text-decoration: none;
+    margin-bottom: 2rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .back-link:hover {
+    color: #FF6B6B;
+  }
+  
+  .article-header h1 {
+    font-size: 3rem;
+    color: #221E1D;
+    margin-bottom: 1rem;
+  }
+  
+  .article-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* 中文排版样式 - 竖排版 */
+  .article-page.chinese .article {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    direction: rtl;
+    padding: 4rem 2rem;
+    margin-right: 0;
+  }
+  
+  .article-page.chinese .article-content {
+    font-size: 1.2rem;
+    line-height: 2.2;
+    color: #333;
+    letter-spacing: 0.1em;
+  }
+  
+  .article-page.chinese .article-content :global(p) {
+    margin-bottom: 0;
+    margin-right: 2rem;
+    letter-spacing: 0.15em;
+    text-align: right;
+  }
+  
+  .article-page.chinese .article-content :global(h2) {
+    font-size: 1.8rem;
+    color: #E9633B;
+    margin-right: 1.5rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    text-align: right;
+  }
+  
+  /* 英文排版样式 */
+  .article-page.english .article-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+  }
+  
+  .article-page.english .article-content :global(p) {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  
+  .article-page.english .article-content :global(h2) {
+    font-size: 1.8rem;
+    color: #E9633B;
+    margin: 2.5rem 0 1rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articles');
+---
+
+<Layout title="文字 - Sotaemon">
+  <Navigation alwaysVisible={true} />
+  
+  <main class="text-page">
+    <section class="hero">
+      <h1>文字</h1>
+      <p>探索不同语言的文章与表达</p>
+    </section>
+    
+    <section class="articles">
+      {articles.map(article => (
+        <article class="article-card">
+          <div class="article-meta">
+            <span class="language">{article.data.language}</span>
+            <span class="date">{article.data.date}</span>
+            <span class="read-time">{article.data.readTime}</span>
+          </div>
+          <h2 class="article-title">{article.data.title}</h2>
+          <p class="article-excerpt">{article.data.excerpt || article.data.title}</p>
+          <a href={`/text/${article.id}`} class="read-more">阅读全文 →</a>
+        </article>
+      ))}
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  .text-page {
+    min-height: 100vh;
+    padding-top: 60px;
+  }
+  
+  .hero {
+    height: 40vh;
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .hero h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .hero p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+  }
+  
+  .articles {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+  }
+  
+  .article-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  
+  .article-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  .article-meta span {
+    display: inline-block;
+  }
+  
+  .article-title {
+    font-size: 1.8rem;
+    color: #221E1D;
+    margin-bottom: 1rem;
+  }
+  
+  .article-excerpt {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+  
+  .read-more {
+    display: inline-block;
+    color: #E9633B;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  
+  .read-more:hover {
+    color: #FF6B6B;
+  }
+</style>

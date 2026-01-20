@@ -1,0 +1,59 @@
+---
+interface Props {
+	id: string;
+	title: string;
+	content: string;
+	variant?: 'introduction' | 'features' | 'gallery' | 'testimonials' | 'contact';
+}
+
+const { id, title, content, variant = 'introduction' } = Astro.props;
+
+const variantStyles = {
+	introduction: 'background-color: #ECEAE0;',
+	features: 'background: linear-gradient(135deg, #63AA9C, #ECEAE0);',
+	gallery: 'background-color: #ECEAE0;',
+	testimonials: 'background: linear-gradient(135deg, #E9633B, #ECEAE0);',
+	contact: 'background-color: #221E1D; color: white;'
+};
+---
+
+<div id={id} class={`section ${variant}`} style={variantStyles[variant]}>
+  <div>
+    <h2>{title}</h2>
+    <p>{content}</p>
+  </div>
+</div>
+
+<style>
+  .section {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #221E1D;
+  }
+  
+  .section.contact h2 {
+    color: white;
+  }
+  
+  .section p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    text-align: center;
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  .section.contact p {
+    color: #ECEAE0;
+  }
+</style>

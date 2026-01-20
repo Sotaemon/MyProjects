@@ -1,0 +1,70 @@
+---
+interface Props {
+	title?: string;
+	subtitle?: string;
+}
+
+const { title = '我的网站', subtitle = '探索无限可能' } = Astro.props;
+---
+
+<div class="header" id="mainHeader">
+  <h1>{title}</h1>
+  <div class="subtitle">{subtitle}</div>
+</div>
+
+<style>
+  .header {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    transition: all 0.5s ease;
+  }
+  
+  .header.scrolled {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  
+  .header h1 {
+    font-size: 4rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    margin: 0;
+    font-weight: 700;
+    animation: fadeInDown 1s ease-out;
+  }
+  
+  .header .subtitle {
+    font-size: 1.5rem;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    margin-top: 0.5rem;
+    animation: fadeInUp 1s ease-out 0.2s both;
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
