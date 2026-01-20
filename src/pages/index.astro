@@ -1,12 +1,151 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Header from '../components/Header.astro';
+import Navigation from '../components/Navigation.astro';
+import PageDirectory from '../components/PageDirectory.astro';
+import Section from '../components/Section.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<Layout>
-	<Welcome />
-	<h2>我的 Astro 网站</h2>
+<Layout title="我的Astro网站">
+  <div class="top-section">
+    <Header title="我的网站" subtitle="探索无限可能" />
+    <div class="main-content">
+    </div>
+    <PageDirectory />
+  </div>
+  
+  <Section 
+    id="introduction" 
+    title="介绍" 
+    content="欢迎来到我们的网站！在这里您可以了解到我们的使命、愿景以及我们所提供的服务。我们致力于为用户提供最优质的产品体验。"
+    variant="introduction"
+  />
+  
+  <Section 
+    id="features" 
+    title="特性" 
+    content="我们提供多种特色功能，包括个性化定制、智能推荐、多平台同步等。每一项功能都经过精心设计，旨在提升您的使用体验。"
+    variant="features"
+  />
+  
+  <Section 
+    id="gallery" 
+    title="画廊" 
+    content="这里展示了我们的产品图片、工作场景以及团队风采。通过这些图片，您可以更直观地了解我们的工作环境和产品细节。"
+    variant="gallery"
+  />
+  
+  <Section 
+    id="testimonials" 
+    title="评价" 
+    content="我们的客户对我们的服务给予了高度评价。他们的真实反馈是我们不断改进的动力，也是我们品质的最好证明。"
+    variant="testimonials"
+  />
+  
+  <Section 
+    id="contact" 
+    title="联系" 
+    content="如果您有任何问题或建议，欢迎随时联系我们。我们提供多种联系方式，包括电话、邮箱和在线表单，期待与您的沟通。"
+    variant="contact"
+  />
+  
+  <Navigation />
+  <Footer />
 </Layout>
+
+<style>
+  .top-section {
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(135deg, #FF6B6B, #4ECDC4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #221E1D;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .main-content {
+    text-align: center;
+    padding: 2rem;
+    margin-top: 10vh;
+  }
+</style>
+
+<script>
+  // 平滑滚动到锚点
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e: Event) => {
+      e.preventDefault();
+      
+      const targetId = anchor.getAttribute('href');
+      if (targetId) {
+        const targetElement = document.querySelector(targetId) as HTMLElement;
+        
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop,
+            behavior: 'smooth'
+          });
+        }
+      }
+    });
+  });
+  
+  // 监听滚动事件，高亮当前部分的目录项
+  window.addEventListener('scroll', function() {
+    const sections = document.querySelectorAll<HTMLElement>('.section');
+    const directoryLinks = document.querySelectorAll('.page-directory a');
+    
+    let current = '';
+    
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+      
+      if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+        const sectionId = section.getAttribute('id');
+        if (sectionId) {
+          current = sectionId;
+        }
+      }
+    });
+    
+    directoryLinks.forEach(link => {
+      link.classList.remove('active');
+    });
+    
+    if(current) {
+      const activeLink = document.querySelector(`.page-directory a[href="#${current}"]`);
+      if(activeLink) {
+        activeLink.classList.add('active');
+      }
+    }
+    
+    const navigationHeader = document.getElementById('navigationHeader');
+    const mainHeader = document.getElementById('mainHeader');
+    
+    if (window.scrollY > 100) {
+      navigationHeader?.classList.add('visible');
+      mainHeader?.classList.add('scrolled');
+    } else {
+      navigationHeader?.classList.remove('visible');
+      mainHeader?.classList.remove('scrolled');
+    }
+    
+    const pageDirectory = document.getElementById('pageDirectory');
+    if (window.scrollY > 500) {
+      pageDirectory?.classList.add('floating');
+      
+      if(current) {
+        pageDirectory?.setAttribute('data-bg', current);
+      }
+    } else {
+      pageDirectory?.classList.remove('floating');
+      pageDirectory?.removeAttribute('data-bg');
+    }
+  });
+</script>
